@@ -6,9 +6,9 @@
 #include "/home/codeleaded/System/Static/Library/MarchingCubes.h"
 #include "/home/codeleaded/System/Static/Library/PerlinNoise.h"
 
-#define FIELDX	30
-#define FIELDY	30
-#define FIELDZ	30
+#define FIELDX	100
+#define FIELDY	100
+#define FIELDZ	100
 
 Camera cam;
 World3D world;
@@ -44,7 +44,8 @@ void Setup(AlxWindow* w){
 	world.normal = WORLD3D_NORMAL_CAP;
 
 	Vector_Clear(&world.trisIn);
-	MarchingCubes_Render(PerlinNoise_3D_Get,&world.trisIn,cam.p.x,cam.p.y,cam.p.z,FIELDX,FIELDY,FIELDZ);
+	MarchingCubes_Render2D(PerlinNoise_2D_Get,&world.trisIn,cam.p.x,cam.p.z,FIELDX,FIELDZ);
+	//MarchingCubes_Render3D(PerlinNoise_3D_Get,&world.trisIn,cam.p.x,cam.p.y,cam.p.z,FIELDX,FIELDY,FIELDZ);
 }
 void Update(AlxWindow* w){
 	if(Menu==1){
@@ -94,10 +95,14 @@ void Update(AlxWindow* w){
 	const int newpos_y = (int)floorf(cam.p.y * 0.05f); 
 	const int newpos_z = (int)floorf(cam.p.z * 0.05f);
 
-	if(prepos_x != newpos_x || prepos_y != newpos_y || prepos_z != newpos_z){
-		Vector_Clear(&world.trisIn);
-		MarchingCubes_Render(PerlinNoise_3D_Get,&world.trisIn,cam.p.x,cam.p.y,cam.p.z,FIELDX,FIELDY,FIELDZ);
-	}
+	Vector_Clear(&world.trisIn);
+	MarchingCubes_Render2D(PerlinNoise_2D_Get,&world.trisIn,cam.p.x,cam.p.z,FIELDX,FIELDZ);
+
+	//if(prepos_x != newpos_x || prepos_y != newpos_y || prepos_z != newpos_z){
+	//	Vector_Clear(&world.trisIn);
+	//	MarchingCubes_Render2D(PerlinNoise_2D_Get,&world.trisIn,cam.p.x,cam.p.z,FIELDX,FIELDZ);
+	//	MarchingCubes_Render3D(PerlinNoise_3D_Get,&world.trisIn,cam.p.x,cam.p.y,cam.p.z,FIELDX,FIELDY,FIELDZ);
+	//}
 
 	Clear(LIGHT_BLUE);
 	World3D_Update(&world,cam.p,(Vec2){ GetWidth(),GetHeight() });
