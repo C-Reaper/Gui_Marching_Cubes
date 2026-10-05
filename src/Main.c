@@ -16,6 +16,9 @@ int Mode = 0;
 int Menu = 0;
 float Speed = 4.0f;
 
+float pos = 0.0f;
+float height = 1.0f;
+
 void Menu_Set(int m){
 	if(Menu==0 && m==1){
 		AlxWindow_Mouse_SetInvisible(&window);
@@ -44,7 +47,7 @@ void Setup(AlxWindow* w){
 	world.normal = WORLD3D_NORMAL_CAP;
 
 	Vector_Clear(&world.trisIn);
-	MarchingCubes_Render2D(PerlinNoise_2D_Get,&world.trisIn,cam.p.x,cam.p.z,FIELDX,FIELDZ);
+	MarchingCubes_Render2D(PerlinNoise_2D_Get,&world.trisIn,cam.p.x,cam.p.z,FIELDX,FIELDZ,height,WHITE);
 	//MarchingCubes_Render3D(PerlinNoise_3D_Get,&world.trisIn,cam.p.x,cam.p.y,cam.p.z,FIELDX,FIELDY,FIELDZ);
 }
 void Update(AlxWindow* w){
@@ -78,9 +81,9 @@ void Update(AlxWindow* w){
 		cam.p.y -= Speed * w->ElapsedTime;
 
 	if(Stroke(ALX_KEY_LEFT).DOWN)
-		PerlinNoise_Offset_Set(PerlinNoise_Offset_Get() * 1.01);
+		height *= 1.01f;
 	else if(Stroke(ALX_KEY_RIGHT).DOWN)
-		PerlinNoise_Offset_Set(PerlinNoise_Offset_Get() * 0.99);
+		height *= 0.99f;
 
 	if(Stroke(ALX_KEY_UP).DOWN)
 		PerlinNoise_Persistance_Set(PerlinNoise_Persistance_Get() * 1.01);
@@ -96,12 +99,12 @@ void Update(AlxWindow* w){
 	const int newpos_z = (int)floorf(cam.p.z * 0.05f);
 
 	Vector_Clear(&world.trisIn);
-	MarchingCubes_Render2D(PerlinNoise_2D_Get,&world.trisIn,cam.p.x,cam.p.z,FIELDX,FIELDZ);
+	MarchingCubes_Render2D(PerlinNoise_2D_Get,&world.trisIn,cam.p.x,cam.p.z,FIELDX,FIELDZ,height,WHITE);
 
 	//if(prepos_x != newpos_x || prepos_y != newpos_y || prepos_z != newpos_z){
 	//	Vector_Clear(&world.trisIn);
-	//	MarchingCubes_Render2D(PerlinNoise_2D_Get,&world.trisIn,cam.p.x,cam.p.z,FIELDX,FIELDZ);
-	//	MarchingCubes_Render3D(PerlinNoise_3D_Get,&world.trisIn,cam.p.x,cam.p.y,cam.p.z,FIELDX,FIELDY,FIELDZ);
+	//	MarchingCubes_Render2D(PerlinNoise_2D_Get,&world.trisIn,cam.p.x,cam.p.z,FIELDX,FIELDZ,height,WHITE);
+	//	MarchingCubes_Render3D(PerlinNoise_3D_Get,&world.trisIn,cam.p.x,cam.p.y,cam.p.z,FIELDX,FIELDY,FIELDZ,WHITE);
 	//}
 
 	Clear(LIGHT_BLUE);
@@ -130,7 +133,7 @@ void Delete(AlxWindow* w){
 }
 
 int main(){
-	if(Create("Gravity Simulation",2500,1440,1,1,Setup,Update,Delete))
+	if(Create("Marching Cubes",2500,1440,1,1,Setup,Update,Delete))
         Start();
     return 0;
 }
